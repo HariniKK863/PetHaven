@@ -1,7 +1,8 @@
 import { useState } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Menu, X, Heart, PawPrint } from "lucide-react";
+import { Menu, X, Heart, PawPrint, LogOut, User } from "lucide-react";
+import { useAuth } from "@/contexts/AuthContext";
 
 const navLinks = [
   { name: "Home", path: "/" },
@@ -9,12 +10,31 @@ const navLinks = [
   { name: "Lost & Found", path: "/lost-found" },
   { name: "Report Injured", path: "/report-injured" },
   { name: "Vet Services", path: "/vet-services" },
-  { name: "Shelters", path: "/shelters" },
 ];
 
 export function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const location = useLocation();
+  const navigate = useNavigate();
+  const { user, signOut, role } = useAuth();
+
+  const handleSignOut = async () => {
+    await signOut();
+    navigate("/");
+  };
+
+  const getRoleLabel = () => {
+    switch (role) {
+      case "pet_owner":
+        return "Pet Owner";
+      case "shelter":
+        return "Shelter";
+      case "veterinarian":
+        return "Veterinarian";
+      default:
+        return "";
+    }
+  };
 
   return (
     <nav className="sticky top-0 z-50 bg-card/80 backdrop-blur-md border-b border-border">
@@ -47,15 +67,37 @@ export function Navbar() {
 
           {/* Desktop Auth Buttons */}
           <div className="hidden md:flex items-center gap-3">
-            <Button variant="ghost" asChild>
-              <Link to="/login">Sign In</Link>
-            </Button>
-            <Button asChild>
-              <Link to="/register">
-                <Heart className="mr-2 h-4 w-4" />
-                Get Started
-              </Link>
-            </Button>
+            {user ? (
+              <>
+                <Button variant="ghost" asChild>
+                  <Link to="/dashboard" className="gap-2">
+                    <User className="h-4 w-4" />
+                    Dashboard
+                    {role && (
+                      <span className="text-xs text-muted-foreground">
+                        ({getRoleLabel()})
+                      </span>
+                    )}
+                  </Link>
+                </Button>
+                <Button variant="outline" onClick={handleSignOut}>
+                  <LogOut className="mr-2 h-4 w-4" />
+                  Sign Out
+                </Button>
+              </>
+            ) : (
+              <>
+                <Button variant="ghost" asChild>
+                  <Link to="/login">Sign In</Link>
+                </Button>
+                <Button asChild>
+                  <Link to="/register">
+                    <Heart className="mr-2 h-4 w-4" />
+                    Get Started
+                  </Link>
+                </Button>
+              </>
+            )}
           </div>
 
           {/* Mobile Menu Button */}
@@ -91,15 +133,41 @@ export function Navbar() {
                 </Link>
               ))}
               <div className="flex flex-col gap-2 pt-4 border-t border-border">
-                <Button variant="ghost" asChild className="justify-start">
-                  <Link to="/login">Sign In</Link>
-                </Button>
-                <Button asChild>
-                  <Link to="/register">
-                    <Heart className="mr-2 h-4 w-4" />
-                    Get Started
-                  </Link>
-                </Button>
+                {user ? (
+                  <>
+                    <Button variant="ghost" asChild className="justify-start">
+                      <Link to="/dashboard" onClick={() => setIsOpen(false)}>
+                        <User className="mr-2 h-4 w-4" />
+                        Dashboard
+                      </Link>
+                    </Button>
+                    <Button
+                      variant="outline"
+                      onClick={() => {
+                        handleSignOut();
+                        setIsOpen(false);
+                      }}
+                      className="justify-start"
+                    >
+                      <LogOut className="mr-2 h-4 w-4" />
+                      Sign Out
+                    </Button>
+                  </>
+                ) : (
+                  <>
+                    <Button variant="ghost" asChild className="justify-start">
+                      <Link to="/login" onClick={() => setIsOpen(false)}>
+                        Sign In
+                      </Link>
+                    </Button>
+                    <Button asChild>
+                      <Link to="/register" onClick={() => setIsOpen(false)}>
+                        <Heart className="mr-2 h-4 w-4" />
+                        Get Started
+                      </Link>
+                    </Button>
+                  </>
+                )}
               </div>
             </div>
           </div>

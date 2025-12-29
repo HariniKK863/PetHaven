@@ -14,16 +14,323 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      adoption_requests: {
+        Row: {
+          created_at: string
+          id: string
+          message: string | null
+          pet_id: string
+          requester_id: string
+          shelter_id: string | null
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          message?: string | null
+          pet_id: string
+          requester_id: string
+          shelter_id?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          message?: string | null
+          pet_id?: string
+          requester_id?: string
+          shelter_id?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "adoption_requests_pet_id_fkey"
+            columns: ["pet_id"]
+            isOneToOne: false
+            referencedRelation: "pets"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      injured_reports: {
+        Row: {
+          assigned_vet_id: string | null
+          created_at: string
+          description: string
+          id: string
+          image_url: string | null
+          location: string
+          reporter_id: string
+          severity: string
+          species: string
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          assigned_vet_id?: string | null
+          created_at?: string
+          description: string
+          id?: string
+          image_url?: string | null
+          location: string
+          reporter_id: string
+          severity: string
+          species: string
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          assigned_vet_id?: string | null
+          created_at?: string
+          description?: string
+          id?: string
+          image_url?: string | null
+          location?: string
+          reporter_id?: string
+          severity?: string
+          species?: string
+          status?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      lost_found_reports: {
+        Row: {
+          breed: string | null
+          color: string | null
+          contact_info: string | null
+          created_at: string
+          date_reported: string
+          description: string | null
+          id: string
+          image_url: string | null
+          location: string
+          pet_name: string | null
+          reporter_id: string
+          species: string
+          status: string
+          type: string
+          updated_at: string
+        }
+        Insert: {
+          breed?: string | null
+          color?: string | null
+          contact_info?: string | null
+          created_at?: string
+          date_reported?: string
+          description?: string | null
+          id?: string
+          image_url?: string | null
+          location: string
+          pet_name?: string | null
+          reporter_id: string
+          species: string
+          status?: string
+          type: string
+          updated_at?: string
+        }
+        Update: {
+          breed?: string | null
+          color?: string | null
+          contact_info?: string | null
+          created_at?: string
+          date_reported?: string
+          description?: string | null
+          id?: string
+          image_url?: string | null
+          location?: string
+          pet_name?: string | null
+          reporter_id?: string
+          species?: string
+          status?: string
+          type?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      pets: {
+        Row: {
+          age: string | null
+          breed: string | null
+          created_at: string
+          description: string | null
+          gender: string | null
+          id: string
+          image_url: string | null
+          is_for_adoption: boolean | null
+          location: string | null
+          name: string
+          neutered: boolean | null
+          owner_id: string
+          shelter_name: string | null
+          species: string
+          updated_at: string
+          vaccinated: boolean | null
+        }
+        Insert: {
+          age?: string | null
+          breed?: string | null
+          created_at?: string
+          description?: string | null
+          gender?: string | null
+          id?: string
+          image_url?: string | null
+          is_for_adoption?: boolean | null
+          location?: string | null
+          name: string
+          neutered?: boolean | null
+          owner_id: string
+          shelter_name?: string | null
+          species: string
+          updated_at?: string
+          vaccinated?: boolean | null
+        }
+        Update: {
+          age?: string | null
+          breed?: string | null
+          created_at?: string
+          description?: string | null
+          gender?: string | null
+          id?: string
+          image_url?: string | null
+          is_for_adoption?: boolean | null
+          location?: string | null
+          name?: string
+          neutered?: boolean | null
+          owner_id?: string
+          shelter_name?: string | null
+          species?: string
+          updated_at?: string
+          vaccinated?: boolean | null
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          address: string | null
+          avatar_url: string | null
+          created_at: string
+          email: string | null
+          full_name: string | null
+          id: string
+          organization_name: string | null
+          phone: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          address?: string | null
+          avatar_url?: string | null
+          created_at?: string
+          email?: string | null
+          full_name?: string | null
+          id?: string
+          organization_name?: string | null
+          phone?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          address?: string | null
+          avatar_url?: string | null
+          created_at?: string
+          email?: string | null
+          full_name?: string | null
+          id?: string
+          organization_name?: string | null
+          phone?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      treatment_requests: {
+        Row: {
+          created_at: string
+          description: string
+          id: string
+          notes: string | null
+          owner_id: string
+          pet_id: string
+          status: string
+          updated_at: string
+          veterinarian_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          description: string
+          id?: string
+          notes?: string | null
+          owner_id: string
+          pet_id: string
+          status?: string
+          updated_at?: string
+          veterinarian_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          description?: string
+          id?: string
+          notes?: string | null
+          owner_id?: string
+          pet_id?: string
+          status?: string
+          updated_at?: string
+          veterinarian_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "treatment_requests_pet_id_fkey"
+            columns: ["pet_id"]
+            isOneToOne: false
+            referencedRelation: "pets"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_roles: {
+        Row: {
+          created_at: string
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      get_user_role: {
+        Args: { _user_id: string }
+        Returns: Database["public"]["Enums"]["app_role"]
+      }
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
     }
     Enums: {
-      [_ in never]: never
+      app_role: "pet_owner" | "shelter" | "veterinarian"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +457,8 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      app_role: ["pet_owner", "shelter", "veterinarian"],
+    },
   },
 } as const
