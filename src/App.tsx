@@ -6,6 +6,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "@/contexts/AuthContext";
 import Index from "./pages/Index";
 import AdoptPage from "./pages/AdoptPage";
+import PetDetailsPage from "./pages/PetDetailsPage";
 import LostFoundPage from "./pages/LostFoundPage";
 import ReportInjuredPage from "./pages/ReportInjuredPage";
 import VetServicesPage from "./pages/VetServicesPage";
@@ -26,6 +27,7 @@ const App = () => (
           <Routes>
             <Route path="/" element={<Index />} />
             <Route path="/adopt" element={<AdoptPage />} />
+            <Route path="/adopt/:id" element={<PetDetailsPage />} />
             <Route path="/lost-found" element={<LostFoundPage />} />
             <Route path="/report-injured" element={<ReportInjuredPage />} />
             <Route path="/vet-services" element={<VetServicesPage />} />

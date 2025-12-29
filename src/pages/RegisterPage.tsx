@@ -30,7 +30,7 @@ export default function RegisterPage() {
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [role, setRole] = useState<AppRole>("pet_owner");
+  const [role, setRole] = useState<AppRole>("general_user");
   const [agreedToTerms, setAgreedToTerms] = useState(false);
   const { toast } = useToast();
   const { signUp, user } = useAuth();
@@ -164,6 +164,7 @@ export default function RegisterPage() {
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
+                      <SelectItem value="general_user">General User</SelectItem>
                       <SelectItem value="pet_owner">Pet Owner</SelectItem>
                       <SelectItem value="shelter">Animal Shelter</SelectItem>
                       <SelectItem value="veterinarian">Veterinarian</SelectItem>

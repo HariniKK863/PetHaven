@@ -21,6 +21,7 @@ import {
 } from "@/components/ui/select";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
+import { Upload } from "lucide-react";
 
 interface CreatePetDialogProps {
   open: boolean;
@@ -32,6 +33,7 @@ interface CreatePetDialogProps {
 export function CreatePetDialog({ open, onOpenChange, onSuccess, isShelter = false }: CreatePetDialogProps) {
   const { user } = useAuth();
   const [loading, setLoading] = useState(false);
+  const [imageFile, setImageFile] = useState<File | null>(null);
   const [formData, setFormData] = useState({
     name: "",
     species: "",
@@ -52,6 +54,25 @@ export function CreatePetDialog({ open, onOpenChange, onSuccess, isShelter = fal
 
     setLoading(true);
 
+    let imageUrl: string | null = null;
+
+    // Upload image if provided
+    if (imageFile) {
+      const fileExt = imageFile.name.split(".").pop();
+      const fileName = `${user.id}/${Date.now()}.${fileExt}`;
+
+      const { error: uploadError } = await supabase.storage
+        .from("pet-images")
+        .upload(fileName, imageFile);
+
+      if (!uploadError) {
+        const { data: urlData } = supabase.storage
+          .from("pet-images")
+          .getPublicUrl(fileName);
+        imageUrl = urlData.publicUrl;
+      }
+    }
+
     const { error } = await supabase.from("pets").insert({
       owner_id: user.id,
       name: formData.name,
@@ -65,6 +86,7 @@ export function CreatePetDialog({ open, onOpenChange, onSuccess, isShelter = fal
       location: formData.location || null,
       vaccinated: formData.vaccinated,
       neutered: formData.neutered,
+      image_url: imageUrl,
     });
 
     setLoading(false);
@@ -85,6 +107,7 @@ export function CreatePetDialog({ open, onOpenChange, onSuccess, isShelter = fal
         vaccinated: false,
         neutered: false,
       });
+      setImageFile(null);
       onSuccess();
     }
   };
@@ -195,6 +218,26 @@ export function CreatePetDialog({ open, onOpenChange, onSuccess, isShelter = fal
                 />
               </div>
             </>
+          )}
+
+          {isShelter && (
+            <div className="space-y-2">
+              <Label htmlFor="image">Pet Image</Label>
+              <div className="flex items-center gap-2">
+                <Input
+                  id="image"
+                  type="file"
+                  accept="image/*"
+                  onChange={(e) => setImageFile(e.target.files?.[0] || null)}
+                />
+                {imageFile && (
+                  <span className="text-xs text-muted-foreground flex items-center gap-1">
+                    <Upload className="h-3 w-3" />
+                    {imageFile.name}
+                  </span>
+                )}
+              </div>
+            </div>
           )}
 
           <div className="flex items-center justify-between">

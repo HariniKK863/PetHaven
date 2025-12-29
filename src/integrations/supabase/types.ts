@@ -216,10 +216,13 @@ export type Database = {
           email: string | null
           full_name: string | null
           id: string
+          is_verified: boolean | null
           organization_name: string | null
           phone: string | null
           updated_at: string
           user_id: string
+          verification_document_url: string | null
+          verification_status: string | null
         }
         Insert: {
           address?: string | null
@@ -228,10 +231,13 @@ export type Database = {
           email?: string | null
           full_name?: string | null
           id?: string
+          is_verified?: boolean | null
           organization_name?: string | null
           phone?: string | null
           updated_at?: string
           user_id: string
+          verification_document_url?: string | null
+          verification_status?: string | null
         }
         Update: {
           address?: string | null
@@ -240,10 +246,13 @@ export type Database = {
           email?: string | null
           full_name?: string | null
           id?: string
+          is_verified?: boolean | null
           organization_name?: string | null
           phone?: string | null
           updated_at?: string
           user_id?: string
+          verification_document_url?: string | null
+          verification_status?: string | null
         }
         Relationships: []
       }
