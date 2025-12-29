@@ -1,15 +1,38 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Layout } from "@/components/Layout";
 import { useAuth } from "@/contexts/AuthContext";
 import { PetOwnerDashboard } from "@/components/dashboard/PetOwnerDashboard";
 import { ShelterDashboard } from "@/components/dashboard/ShelterDashboard";
 import { VeterinarianDashboard } from "@/components/dashboard/VeterinarianDashboard";
+import { GeneralUserDashboard } from "@/components/dashboard/GeneralUserDashboard";
+import { AdminDashboard } from "@/components/dashboard/AdminDashboard";
+import { VerificationUpload } from "@/components/dashboard/VerificationUpload";
 import { Loader2 } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
 
 export default function DashboardPage() {
   const { user, role, loading } = useAuth();
   const navigate = useNavigate();
+  const [verificationStatus, setVerificationStatus] = useState<string | null>(null);
+  const [documentUrl, setDocumentUrl] = useState<string | null>(null);
+  const [profileLoading, setProfileLoading] = useState(true);
+
+  const fetchProfile = async () => {
+    if (!user) return;
+    
+    const { data } = await supabase
+      .from("profiles")
+      .select("verification_status, verification_document_url")
+      .eq("user_id", user.id)
+      .maybeSingle();
+
+    if (data) {
+      setVerificationStatus(data.verification_status);
+      setDocumentUrl(data.verification_document_url);
+    }
+    setProfileLoading(false);
+  };
 
   useEffect(() => {
     if (!loading && !user) {
@@ -17,7 +40,15 @@ export default function DashboardPage() {
     }
   }, [user, loading, navigate]);
 
-  if (loading) {
+  useEffect(() => {
+    if (user && (role === "shelter" || role === "veterinarian")) {
+      fetchProfile();
+    } else {
+      setProfileLoading(false);
+    }
+  }, [user, role]);
+
+  if (loading || profileLoading) {
     return (
       <Layout>
         <div className="min-h-[60vh] flex items-center justify-center">
@@ -31,6 +62,8 @@ export default function DashboardPage() {
     return null;
   }
 
+  const needsVerification = (role === "shelter" || role === "veterinarian") && verificationStatus !== "approved";
+
   return (
     <Layout>
       <div className="container mx-auto px-4 py-8">
@@ -39,9 +72,22 @@ export default function DashboardPage() {
           Welcome back! Here's your personalized dashboard.
         </p>
 
+        {/* Show verification upload for unverified shelters/vets */}
+        {needsVerification && (
+          <div className="mb-8">
+            <VerificationUpload
+              currentStatus={verificationStatus}
+              documentUrl={documentUrl}
+              onUploadComplete={fetchProfile}
+            />
+          </div>
+        )}
+
+        {role === "general_user" && <GeneralUserDashboard />}
         {role === "pet_owner" && <PetOwnerDashboard />}
         {role === "shelter" && <ShelterDashboard />}
         {role === "veterinarian" && <VeterinarianDashboard />}
+        {role === "admin" && <AdminDashboard />}
         {!role && (
           <div className="text-center py-12">
             <p className="text-muted-foreground">
