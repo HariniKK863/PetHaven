@@ -1,7 +1,7 @@
 # PetHaven – Integrated Pet Welfare and Management System
 
 ## Project Overview
-PetHaven is a web-based Integrated Pet Welfare and Management System designed to centralize pet-related services such as pet adoption, medical care, lost and found reporting, and verification of animal shelters and veterinarians. The platform brings together multiple stakeholders—pet owners, general users, shelters, veterinarians, and system administrators-into a single, unified system to improve efficiency, transparency, and accountability in pet welfare management.
+PetHaven is a web-based Integrated Pet Welfare and Management System designed to centralize pet-related services such as pet adoption, medical care, lost and found reporting, and verification of animal shelters and veterinarians. The platform brings together multiple stakeholders-pet owners, general users, shelters, veterinarians, and system administrators-into a single, unified system to improve efficiency, transparency, and accountability in pet welfare management.
 
 The project is developed using standard web technologies and follows modern software engineering practices, including version control with GitHub and structured local development workflows.
 
