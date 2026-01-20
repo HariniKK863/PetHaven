@@ -1,7 +1,7 @@
-# 🐾 PetHaven – Integrated Pet Welfare and Management System
+# PetHaven – Integrated Pet Welfare and Management System
 
 ## Project Overview
-PetHaven is a web-based Integrated Pet Welfare and Management System designed to centralize pet-related services such as pet adoption, medical care, lost and found reporting, and verification of animal shelters and veterinarians. The platform brings together multiple stakeholders—pet owners, general users, shelters, veterinarians, and system administrators—into a single, unified system to improve efficiency, transparency, and accountability in pet welfare management.
+PetHaven is a web-based Integrated Pet Welfare and Management System designed to centralize pet-related services such as pet adoption, medical care, lost and found reporting, and verification of animal shelters and veterinarians. The platform brings together multiple stakeholders—pet owners, general users, shelters, veterinarians, and system administrators-into a single, unified system to improve efficiency, transparency, and accountability in pet welfare management.
 
 The project is developed using standard web technologies and follows modern software engineering practices, including version control with GitHub and structured local development workflows.
 
@@ -13,7 +13,6 @@ Currently, pet-related services such as adoption, lost and found reporting, and 
 - Difficulty in maintaining and tracking pet medical records  
 - Inefficient and non-transparent adoption processes  
 - Delayed response to lost, found, or injured animals  
-- Lack of standardized verification for shelters and veterinarians  
 - Reduced trust and accountability among stakeholders  
 
 PetHaven addresses these problems by providing a centralized, secure, and role-based digital platform that integrates all core pet welfare workflows into one system.
@@ -51,8 +50,7 @@ To create a trusted, centralized digital ecosystem that enhances pet welfare by 
 - Transparent and ethical pet adoption workflow  
 - Lost, found, and injured pet reporting system  
 - Veterinary appointment booking and treatment tracking  
-- Verification and monitoring of shelters and veterinarians  
-- Clear separation of frontend, backend, and data management components  
+- Verification and monitoring of shelters and veterinarians using the web application 
 
 ---
 
@@ -94,9 +92,5 @@ This project follows **GitHub Flow** for version control.
 - Each feature branch focuses on a specific task or change  
 - Feature branches are merged back into `main` after completion  
 
-### Example Feature Branch
-- `feature/readme-vision`
-
-This branching approach ensures code stability while allowing structured and trackable development.
 
 ---
