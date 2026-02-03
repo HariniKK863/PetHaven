@@ -94,3 +94,28 @@ This project follows **GitHub Flow** for version control.
 
 
 ---
+## MoSCoW Prioritization
+
+### Must Have
+- User registration and login
+- Reporting of lost, found, and injured animals
+- Browsing pets available for adoption
+- Applying for pet adoption
+- Review, approval, and status update of adoption applications by shelters
+- Veterinary appointment booking
+
+### Should Have
+- Uploading and managing pet medical and vaccination records
+- Shelter visit schedule management and slot selection
+- Veterinarian case and appointment management
+- Verification of shelters and veterinarians by admin
+
+### Could Have
+- System usage and adoption reports
+- Administrative monitoring dashboard
+- Advanced search and filtering options
+
+### Won’t Have (Current Phase)
+- Notification and alert system
+- Payment and donation integration
+- Mobile application support
