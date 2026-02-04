@@ -55,12 +55,12 @@ To create a trusted, centralized digital ecosystem that enhances pet welfare by 
 ---
 
 ## Success Metrics
-
-- All user roles can successfully perform their assigned use cases  
-- Adoption, medical, and lost/found workflows function without conflict  
-- Accurate and secure storage of pet and user data  
-- Verified shelters and veterinarians improve trust and accountability  
-- System operates reliably under normal usage conditions  
+- **User Role Coverage:** 100% of defined user roles (General User, Pet Owner, Shelter, Veterinarian, Administrator) can successfully authenticate and access only their permitted features.
+- **Adoption Workflow Accuracy:** At least **95% of adoption requests** progress through submission, review, and approval or rejection stages without workflow errors or incorrect status updates.
+- **Reporting and Medical Record Consistency:** **100% of lost, found, injured, and medical records** are correctly created, stored, and retrievable without data loss or duplication during normal system usage.
+- **Data Integrity:** **Zero critical data inconsistencies** are observed between user profiles, pet records, adoption records, and medical records during testing scenarios.
+- **System Reliability:** The system remains operational for **at least 99% of normal usage time** during local testing, with no crashes during core workflows.
+- **Verification Effectiveness:** **100% of shelters and veterinarians** are verified by an administrator before being allowed to list pets, approve adoptions, or create medical records.
 
 ---
 
