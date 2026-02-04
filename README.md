@@ -94,3 +94,27 @@ This project follows **GitHub Flow** for version control.
 
 
 ---
+## Quick Start – Local Development
+
+### Prerequisites
+- Docker Desktop installed on the local machine
+
+### Steps to Run the Application
+1. Clone the repository to your local system.
+2. Navigate to the backend directory:  
+   cd backend
+3. Build the Docker image:  
+   docker build -t pethaven-backend .
+4. Run the Docker container:  
+   docker run -p 5000:5000 pethaven-backend
+5. Open a web browser and visit:  
+   http://localhost:5000
+
+---
+
+## Local Development Tools
+- Visual Studio Code  
+- Docker Desktop  
+- Python  
+- Flask  
+- Git & GitHub  
