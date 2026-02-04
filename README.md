@@ -92,8 +92,8 @@ This project follows **GitHub Flow** for version control.
 - Each feature branch focuses on a specific task or change  
 - Feature branches are merged back into `main` after completion  
 
-
 ---
+
 ## MoSCoW Prioritization
 
 ### Must Have
@@ -119,6 +119,7 @@ This project follows **GitHub Flow** for version control.
 - Notification and alert system
 - Payment and donation integration
 - Mobile application support
+
 ---
 ## Quick Start – Local Development
 
@@ -144,3 +145,5 @@ This project follows **GitHub Flow** for version control.
 - **Python** – Programming language used for implementing the backend service.
 - **Flask** – Lightweight web framework used to create the backend API.
 - **Git & GitHub** – Used for version control, collaboration, and project repository management.
+=======
+
