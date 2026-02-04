@@ -113,8 +113,8 @@ This project follows **GitHub Flow** for version control.
 ---
 
 ## Local Development Tools
-- Visual Studio Code  
-- Docker Desktop  
-- Python  
-- Flask  
-- Git & GitHub  
+- **Visual Studio Code** – Code editor used for writing and managing the project source files.
+- **Docker Desktop** – Used to containerize and run the backend application locally.
+- **Python** – Programming language used for implementing the backend service.
+- **Flask** – Lightweight web framework used to create the backend API.
+- **Git & GitHub** – Used for version control, collaboration, and project repository management.
