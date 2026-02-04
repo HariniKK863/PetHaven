@@ -145,5 +145,5 @@ This project follows **GitHub Flow** for version control.
 - **Python** – Programming language used for implementing the backend service.
 - **Flask** – Lightweight web framework used to create the backend API.
 - **Git & GitHub** – Used for version control, collaboration, and project repository management.
-=======
+
 
