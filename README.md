@@ -55,12 +55,12 @@ To create a trusted, centralized digital ecosystem that enhances pet welfare by 
 ---
 
 ## Success Metrics
-
-- All user roles can successfully perform their assigned use cases  
-- Adoption, medical, and lost/found workflows function without conflict  
-- Accurate and secure storage of pet and user data  
-- Verified shelters and veterinarians improve trust and accountability  
-- System operates reliably under normal usage conditions  
+- **User Role Coverage:** 100% of defined user roles (General User, Pet Owner, Shelter, Veterinarian, Administrator) can successfully authenticate and access only their permitted features.
+- **Adoption Workflow Accuracy:** At least **95% of adoption requests** progress through submission, review, and approval or rejection stages without workflow errors or incorrect status updates.
+- **Reporting and Medical Record Consistency:** **100% of lost, found, injured, and medical records** are correctly created, stored, and retrievable without data loss or duplication during normal system usage.
+- **Data Integrity:** **Zero critical data inconsistencies** are observed between user profiles, pet records, adoption records, and medical records during testing scenarios.
+- **System Reliability:** The system remains operational for **at least 99% of normal usage time** during local testing, with no crashes during core workflows.
+- **Verification Effectiveness:** **100% of shelters and veterinarians** are verified by an administrator before being allowed to list pets, approve adoptions, or create medical records.
 
 ---
 
@@ -92,8 +92,8 @@ This project follows **GitHub Flow** for version control.
 - Each feature branch focuses on a specific task or change  
 - Feature branches are merged back into `main` after completion  
 
-
 ---
+
 ## MoSCoW Prioritization
 
 ### Must Have
@@ -119,3 +119,31 @@ This project follows **GitHub Flow** for version control.
 - Notification and alert system
 - Payment and donation integration
 - Mobile application support
+
+---
+## Quick Start – Local Development
+
+### Prerequisites
+- Docker Desktop installed on the local machine
+
+### Steps to Run the Application
+1. Clone the repository to your local system.
+2. Navigate to the backend directory:  
+   cd backend
+3. Build the Docker image:  
+   docker build -t pethaven-backend .
+4. Run the Docker container:  
+   docker run -p 5000:5000 pethaven-backend
+5. Open a web browser and visit:  
+   http://localhost:5000
+
+---
+
+## Local Development Tools
+- **Visual Studio Code** – Code editor used for writing and managing the project source files.
+- **Docker Desktop** – Used to containerize and run the backend application locally.
+- **Python** – Programming language used for implementing the backend service.
+- **Flask** – Lightweight web framework used to create the backend API.
+- **Git & GitHub** – Used for version control, collaboration, and project repository management.
+=======
+
