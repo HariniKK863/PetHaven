@@ -146,4 +146,16 @@ This project follows **GitHub Flow** for version control.
 - **Flask** – Lightweight web framework used to create the backend API.
 - **Git & GitHub** – Used for version control, collaboration, and project repository management.
 
+---
 
+## Software Design
+
+The PetHaven system adopts a layered client–server architecture to clearly separate presentation, application logic, data management, and deployment responsibilities. Role-Based Access Control is implemented to enforce secure and structured permissions across General Users, Shelters, Veterinarians, and Administrators. The backend is structured into modular services with clear workflow separation between adoption, reporting, and veterinary processes to ensure high cohesion and low coupling. The backend is containerized using Docker to provide a consistent, portable, and maintainable execution environment.
+
+This structure improves maintainability, allows independent evolution of modules, and supports future scalability. 
+
+All architecture diagrams, editable Draw.io files, and UI wireframes are available in the `docs/design/` directory.
+
+### Architecture Diagram
+
+[View Architecture Diagram](docs/design/PetHaven_Architecture.png)
