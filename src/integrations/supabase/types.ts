@@ -16,34 +16,58 @@ export type Database = {
     Tables: {
       adoption_requests: {
         Row: {
+          address: string | null
+          approved_visit_time: string | null
           created_at: string
+          email: string | null
+          full_name: string | null
           id: string
           message: string | null
           pet_id: string
+          phone: string | null
+          preferred_visit_times: string[] | null
+          reason: string | null
           requester_id: string
           shelter_id: string | null
           status: string
           updated_at: string
+          visit_date: string | null
         }
         Insert: {
+          address?: string | null
+          approved_visit_time?: string | null
           created_at?: string
+          email?: string | null
+          full_name?: string | null
           id?: string
           message?: string | null
           pet_id: string
+          phone?: string | null
+          preferred_visit_times?: string[] | null
+          reason?: string | null
           requester_id: string
           shelter_id?: string | null
           status?: string
           updated_at?: string
+          visit_date?: string | null
         }
         Update: {
+          address?: string | null
+          approved_visit_time?: string | null
           created_at?: string
+          email?: string | null
+          full_name?: string | null
           id?: string
           message?: string | null
           pet_id?: string
+          phone?: string | null
+          preferred_visit_times?: string[] | null
+          reason?: string | null
           requester_id?: string
           shelter_id?: string | null
           status?: string
           updated_at?: string
+          visit_date?: string | null
         }
         Relationships: [
           {
@@ -151,6 +175,39 @@ export type Database = {
         }
         Relationships: []
       }
+      notifications: {
+        Row: {
+          created_at: string
+          id: string
+          is_read: boolean
+          message: string
+          related_id: string | null
+          title: string
+          type: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          is_read?: boolean
+          message: string
+          related_id?: string | null
+          title: string
+          type?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          is_read?: boolean
+          message?: string
+          related_id?: string | null
+          title?: string
+          type?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       pets: {
         Row: {
           age: string | null
@@ -167,6 +224,7 @@ export type Database = {
           owner_id: string
           shelter_name: string | null
           species: string
+          status: string
           updated_at: string
           vaccinated: boolean | null
         }
@@ -185,6 +243,7 @@ export type Database = {
           owner_id: string
           shelter_name?: string | null
           species: string
+          status?: string
           updated_at?: string
           vaccinated?: boolean | null
         }
@@ -203,6 +262,7 @@ export type Database = {
           owner_id?: string
           shelter_name?: string | null
           species?: string
+          status?: string
           updated_at?: string
           vaccinated?: boolean | null
         }

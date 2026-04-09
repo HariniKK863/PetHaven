@@ -2,29 +2,16 @@ import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { Layout } from "@/components/Layout";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Textarea } from "@/components/ui/textarea";
-import { Label } from "@/components/ui/label";
+import { Card, CardContent } from "@/components/ui/card";
 import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
-import {
-  Heart,
-  MapPin,
-  Calendar,
-  CheckCircle,
-  ArrowLeft,
-  PawPrint,
+  Heart, MapPin, Calendar, CheckCircle, ArrowLeft, PawPrint,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
+import { AdoptionRequestDialog } from "@/components/adoption/AdoptionRequestDialog";
+import { VisitBookingDialog } from "@/components/adoption/VisitBookingDialog";
 
 interface Pet {
   id: string;
@@ -40,6 +27,7 @@ interface Pet {
   vaccinated: boolean | null;
   neutered: boolean | null;
   owner_id: string;
+  status: string;
 }
 
 export default function PetDetailsPage() {
@@ -50,13 +38,12 @@ export default function PetDetailsPage() {
   const [pet, setPet] = useState<Pet | null>(null);
   const [loading, setLoading] = useState(true);
   const [showAdoptDialog, setShowAdoptDialog] = useState(false);
-  const [message, setMessage] = useState("");
-  const [submitting, setSubmitting] = useState(false);
+  const [showVisitDialog, setShowVisitDialog] = useState(false);
+  const [existingRequest, setExistingRequest] = useState<any>(null);
 
   useEffect(() => {
     const fetchPet = async () => {
       if (!id) return;
-
       const { data, error } = await supabase
         .from("pets")
         .select("*")
@@ -64,52 +51,61 @@ export default function PetDetailsPage() {
         .eq("is_for_adoption", true)
         .maybeSingle();
 
-      if (error) {
-        console.error("Error fetching pet:", error);
-      }
+      if (error) console.error("Error fetching pet:", error);
       setPet(data);
       setLoading(false);
     };
-
     fetchPet();
   }, [id]);
 
-  const handleAdoptionRequest = async () => {
-    if (!user || !pet) {
-      toast({
-        title: "Please log in",
-        description: "You need to be logged in to submit an adoption request.",
-        variant: "destructive",
-      });
-      navigate("/login");
-      return;
+  // Check if user already has an adoption request for this pet
+  useEffect(() => {
+    const checkExistingRequest = async () => {
+      if (!user || !id) return;
+      const { data } = await supabase
+        .from("adoption_requests")
+        .select("*")
+        .eq("pet_id", id)
+        .eq("requester_id", user.id)
+        .maybeSingle();
+      setExistingRequest(data);
+    };
+    checkExistingRequest();
+  }, [user, id]);
+
+  const handleAdoptionSuccess = () => {
+    setShowAdoptDialog(false);
+    // Refresh existing request
+    if (user && id) {
+      supabase
+        .from("adoption_requests")
+        .select("*")
+        .eq("pet_id", id)
+        .eq("requester_id", user.id)
+        .maybeSingle()
+        .then(({ data }) => setExistingRequest(data));
     }
+    // Refresh pet data
+    if (id) {
+      supabase
+        .from("pets")
+        .select("*")
+        .eq("id", id)
+        .maybeSingle()
+        .then(({ data }) => { if (data) setPet(data); });
+    }
+  };
 
-    setSubmitting(true);
-
-    const { error } = await supabase.from("adoption_requests").insert({
-      pet_id: pet.id,
-      requester_id: user.id,
-      shelter_id: pet.owner_id,
-      message: message || null,
-    });
-
-    setSubmitting(false);
-
-    if (error) {
-      console.error("Error submitting adoption request:", error);
-      toast({
-        title: "Error",
-        description: "Failed to submit adoption request. Please try again.",
-        variant: "destructive",
-      });
-    } else {
-      toast({
-        title: "Request Submitted!",
-        description: "Your adoption request has been sent to the shelter.",
-      });
-      setShowAdoptDialog(false);
-      setMessage("");
+  const handleVisitSuccess = () => {
+    setShowVisitDialog(false);
+    if (user && id) {
+      supabase
+        .from("adoption_requests")
+        .select("*")
+        .eq("pet_id", id)
+        .eq("requester_id", user.id)
+        .maybeSingle()
+        .then(({ data }) => setExistingRequest(data));
     }
   };
 
@@ -141,62 +137,51 @@ export default function PetDetailsPage() {
     );
   }
 
+  const statusColors: Record<string, string> = {
+    available: "bg-green-100 text-green-800",
+    pending: "bg-yellow-100 text-yellow-800",
+    adopted: "bg-muted text-muted-foreground",
+  };
+
   return (
     <Layout>
       <div className="container mx-auto px-4 py-8">
-        <Button
-          variant="ghost"
-          onClick={() => navigate("/adopt")}
-          className="mb-6"
-        >
+        <Button variant="ghost" onClick={() => navigate("/adopt")} className="mb-6">
           <ArrowLeft className="mr-2 h-4 w-4" />
           Back to Adoption
         </Button>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          {/* Pet Image */}
           <div className="relative aspect-square rounded-lg overflow-hidden">
             <img
-              src={
-                pet.image_url ||
-                "https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=600&h=600&fit=crop"
-              }
+              src={pet.image_url || "https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=600&h=600&fit=crop"}
               alt={pet.name}
               className="w-full h-full object-cover"
             />
-            <button className="absolute top-4 right-4 p-3 bg-card/80 backdrop-blur-sm rounded-full hover:bg-primary hover:text-primary-foreground transition-colors">
-              <Heart className="h-6 w-6" />
-            </button>
+            <Badge className={`absolute top-4 left-4 ${statusColors[pet.status] || ""}`}>
+              {pet.status.charAt(0).toUpperCase() + pet.status.slice(1)}
+            </Badge>
           </div>
 
-          {/* Pet Info */}
           <div className="space-y-6">
             <div>
               <div className="flex items-center gap-3 mb-2">
                 <h1 className="text-3xl font-bold">{pet.name}</h1>
                 <Badge variant="outline">{pet.species}</Badge>
               </div>
-              {pet.breed && (
-                <p className="text-lg text-muted-foreground">{pet.breed}</p>
-              )}
+              {pet.breed && <p className="text-lg text-muted-foreground">{pet.breed}</p>}
             </div>
 
             <div className="flex flex-wrap gap-4 text-sm text-muted-foreground">
               {pet.age && (
                 <div className="flex items-center gap-1">
-                  <Calendar className="h-4 w-4" />
-                  <span>{pet.age}</span>
+                  <Calendar className="h-4 w-4" /><span>{pet.age}</span>
                 </div>
               )}
-              {pet.gender && (
-                <div className="flex items-center gap-1">
-                  <span>{pet.gender}</span>
-                </div>
-              )}
+              {pet.gender && <div className="flex items-center gap-1"><span>{pet.gender}</span></div>}
               {pet.location && (
                 <div className="flex items-center gap-1">
-                  <MapPin className="h-4 w-4" />
-                  <span>{pet.location}</span>
+                  <MapPin className="h-4 w-4" /><span>{pet.location}</span>
                 </div>
               )}
             </div>
@@ -220,67 +205,98 @@ export default function PetDetailsPage() {
             <div className="flex flex-wrap gap-3">
               {pet.vaccinated && (
                 <Badge variant="secondary" className="gap-1">
-                  <CheckCircle className="h-3 w-3" />
-                  Vaccinated
+                  <CheckCircle className="h-3 w-3" />Vaccinated
                 </Badge>
               )}
               {pet.neutered && (
                 <Badge variant="secondary" className="gap-1">
-                  <CheckCircle className="h-3 w-3" />
-                  Neutered/Spayed
+                  <CheckCircle className="h-3 w-3" />Neutered/Spayed
                 </Badge>
               )}
             </div>
 
-            <Button
-              size="lg"
-              className="w-full"
-              onClick={() => setShowAdoptDialog(true)}
-            >
-              <Heart className="mr-2 h-5 w-5" />
-              Request to Adopt {pet.name}
-            </Button>
+            {/* Action buttons based on state */}
+            {pet.status === "available" && !existingRequest && (
+              <Button size="lg" className="w-full" onClick={() => {
+                if (!user) {
+                  toast({ title: "Please log in", description: "You need to be logged in to request adoption.", variant: "destructive" });
+                  navigate("/login");
+                  return;
+                }
+                setShowAdoptDialog(true);
+              }}>
+                <Heart className="mr-2 h-5 w-5" />
+                Request for Adoption
+              </Button>
+            )}
+
+            {existingRequest && existingRequest.status === "pending" && (
+              <div className="space-y-3">
+                <Badge className="bg-yellow-100 text-yellow-800 text-sm px-4 py-2">
+                  Adoption Request Pending
+                </Badge>
+                {(!existingRequest.preferred_visit_times || existingRequest.preferred_visit_times.length === 0) && (
+                  <Button size="lg" className="w-full" variant="outline" onClick={() => setShowVisitDialog(true)}>
+                    <Calendar className="mr-2 h-5 w-5" />
+                    Book Shelter Visit
+                  </Button>
+                )}
+                {existingRequest.preferred_visit_times && existingRequest.preferred_visit_times.length > 0 && (
+                  <div className="p-4 rounded-lg border border-border bg-muted/50">
+                    <p className="text-sm font-medium mb-2">Visit Times Submitted</p>
+                    {existingRequest.approved_visit_time ? (
+                      <p className="text-sm text-green-700">
+                        ✅ Approved: {existingRequest.approved_visit_time} on {existingRequest.visit_date}
+                      </p>
+                    ) : (
+                      <p className="text-sm text-muted-foreground">Waiting for shelter approval...</p>
+                    )}
+                  </div>
+                )}
+              </div>
+            )}
+
+            {existingRequest && existingRequest.status === "approved" && (
+              <Badge className="bg-green-100 text-green-800 text-sm px-4 py-2">
+                ✅ Adoption Approved!
+              </Badge>
+            )}
+
+            {existingRequest && existingRequest.status === "rejected" && (
+              <Badge className="bg-red-100 text-red-800 text-sm px-4 py-2">
+                ❌ Adoption Request Rejected
+              </Badge>
+            )}
+
+            {pet.status === "adopted" && !existingRequest && (
+              <Badge className="bg-muted text-muted-foreground text-sm px-4 py-2">
+                This pet has been adopted
+              </Badge>
+            )}
           </div>
         </div>
       </div>
 
-      {/* Adoption Request Dialog */}
-      <Dialog open={showAdoptDialog} onOpenChange={setShowAdoptDialog}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Adopt {pet.name}</DialogTitle>
-            <DialogDescription>
-              Send an adoption request to the shelter. They will review your
-              request and get back to you.
-            </DialogDescription>
-          </DialogHeader>
-          <div className="space-y-4">
-            <div className="space-y-2">
-              <Label htmlFor="message">
-                Message to Shelter (Optional)
-              </Label>
-              <Textarea
-                id="message"
-                placeholder="Tell the shelter a bit about yourself and why you'd like to adopt this pet..."
-                value={message}
-                onChange={(e) => setMessage(e.target.value)}
-                rows={4}
-              />
-            </div>
-          </div>
-          <DialogFooter>
-            <Button
-              variant="outline"
-              onClick={() => setShowAdoptDialog(false)}
-            >
-              Cancel
-            </Button>
-            <Button onClick={handleAdoptionRequest} disabled={submitting}>
-              {submitting ? "Submitting..." : "Submit Request"}
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+      {pet && user && (
+        <>
+          <AdoptionRequestDialog
+            open={showAdoptDialog}
+            onOpenChange={setShowAdoptDialog}
+            pet={pet}
+            userId={user.id}
+            onSuccess={handleAdoptionSuccess}
+          />
+          {existingRequest && (
+            <VisitBookingDialog
+              open={showVisitDialog}
+              onOpenChange={setShowVisitDialog}
+              requestId={existingRequest.id}
+              petName={pet.name}
+              onSuccess={handleVisitSuccess}
+            />
+          )}
+        </>
+      )}
     </Layout>
   );
 }

@@ -3,6 +3,7 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Menu, X, Heart, PawPrint, LogOut, User } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
+import { NotificationBell } from "@/components/NotificationBell";
 
 const navLinks = [
   { name: "Home", path: "/" },
@@ -69,6 +70,7 @@ export function Navbar() {
           <div className="hidden md:flex items-center gap-3">
             {user ? (
               <>
+                <NotificationBell />
                 <Button variant="ghost" asChild>
                   <Link to="/dashboard" className="gap-2">
                     <User className="h-4 w-4" />
