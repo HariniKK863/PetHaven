@@ -175,6 +175,57 @@ export type Database = {
         }
         Relationships: []
       }
+      medical_records: {
+        Row: {
+          appointment_id: string | null
+          created_at: string
+          diagnosis: string
+          id: string
+          notes: string | null
+          pet_id: string
+          record_date: string
+          treatment: string
+          vet_id: string
+        }
+        Insert: {
+          appointment_id?: string | null
+          created_at?: string
+          diagnosis: string
+          id?: string
+          notes?: string | null
+          pet_id: string
+          record_date?: string
+          treatment: string
+          vet_id: string
+        }
+        Update: {
+          appointment_id?: string | null
+          created_at?: string
+          diagnosis?: string
+          id?: string
+          notes?: string | null
+          pet_id?: string
+          record_date?: string
+          treatment?: string
+          vet_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "medical_records_appointment_id_fkey"
+            columns: ["appointment_id"]
+            isOneToOne: false
+            referencedRelation: "vet_appointments"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "medical_records_pet_id_fkey"
+            columns: ["pet_id"]
+            isOneToOne: false
+            referencedRelation: "pets"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       notifications: {
         Row: {
           created_at: string
@@ -378,6 +429,93 @@ export type Database = {
           id?: string
           role?: Database["public"]["Enums"]["app_role"]
           user_id?: string
+        }
+        Relationships: []
+      }
+      vet_appointments: {
+        Row: {
+          appointment_date: string
+          appointment_time: string
+          created_at: string
+          id: string
+          medical_notes: string | null
+          pet_id: string | null
+          reason: string | null
+          slot_id: string | null
+          status: string
+          updated_at: string
+          user_id: string
+          vet_id: string
+        }
+        Insert: {
+          appointment_date: string
+          appointment_time: string
+          created_at?: string
+          id?: string
+          medical_notes?: string | null
+          pet_id?: string | null
+          reason?: string | null
+          slot_id?: string | null
+          status?: string
+          updated_at?: string
+          user_id: string
+          vet_id: string
+        }
+        Update: {
+          appointment_date?: string
+          appointment_time?: string
+          created_at?: string
+          id?: string
+          medical_notes?: string | null
+          pet_id?: string | null
+          reason?: string | null
+          slot_id?: string | null
+          status?: string
+          updated_at?: string
+          user_id?: string
+          vet_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "vet_appointments_pet_id_fkey"
+            columns: ["pet_id"]
+            isOneToOne: false
+            referencedRelation: "pets"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "vet_appointments_slot_id_fkey"
+            columns: ["slot_id"]
+            isOneToOne: false
+            referencedRelation: "vet_slots"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      vet_slots: {
+        Row: {
+          created_at: string
+          id: string
+          is_booked: boolean
+          slot_date: string
+          slot_time: string
+          vet_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          is_booked?: boolean
+          slot_date: string
+          slot_time: string
+          vet_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          is_booked?: boolean
+          slot_date?: string
+          slot_time?: string
+          vet_id?: string
         }
         Relationships: []
       }
