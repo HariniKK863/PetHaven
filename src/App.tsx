@@ -4,6 +4,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "@/contexts/AuthContext";
+import { RequireAuth } from "@/components/RequireAuth";
 import Index from "./pages/Index";
 import AdoptPage from "./pages/AdoptPage";
 import PetDetailsPage from "./pages/PetDetailsPage";
@@ -26,15 +27,14 @@ const App = () => (
           <Sonner />
           <Routes>
             <Route path="/" element={<Index />} />
-            <Route path="/adopt" element={<AdoptPage />} />
-            <Route path="/adopt/:id" element={<PetDetailsPage />} />
-            <Route path="/lost-found" element={<LostFoundPage />} />
-            <Route path="/report-injured" element={<ReportInjuredPage />} />
-            <Route path="/vet-services" element={<VetServicesPage />} />
             <Route path="/login" element={<LoginPage />} />
             <Route path="/register" element={<RegisterPage />} />
+            <Route path="/adopt" element={<RequireAuth><AdoptPage /></RequireAuth>} />
+            <Route path="/adopt/:id" element={<RequireAuth><PetDetailsPage /></RequireAuth>} />
+            <Route path="/lost-found" element={<RequireAuth><LostFoundPage /></RequireAuth>} />
+            <Route path="/report-injured" element={<RequireAuth><ReportInjuredPage /></RequireAuth>} />
+            <Route path="/vet-services" element={<RequireAuth><VetServicesPage /></RequireAuth>} />
             <Route path="/dashboard" element={<DashboardPage />} />
-            {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>
         </AuthProvider>

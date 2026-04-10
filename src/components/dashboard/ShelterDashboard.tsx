@@ -92,41 +92,6 @@ export function ShelterDashboard() {
     toast({ title: "Pet listed for adoption!" });
   };
 
-  const handleUpdateRequest = async (request: AdoptionRequest, status: "approved" | "rejected") => {
-    const { error } = await supabase
-      .from("adoption_requests")
-      .update({ status })
-      .eq("id", request.id);
-
-    if (error) {
-      toast({ title: "Error updating request", variant: "destructive" });
-      return;
-    }
-
-    // Update pet status
-    const petStatus = status === "approved" ? "adopted" : "available";
-    await supabase.from("pets").update({ status: petStatus }).eq("id", request.pet_id);
-
-    // If approved, also update is_for_adoption
-    if (status === "approved") {
-      await supabase.from("pets").update({ is_for_adoption: false }).eq("id", request.pet_id);
-    }
-
-    // Notify the requester
-    await supabase.from("notifications").insert({
-      user_id: request.requester_id,
-      title: status === "approved" ? "Adoption Approved! 🎉" : "Adoption Request Update",
-      message: status === "approved"
-        ? `Your adoption request for ${request.pets?.name} has been approved! Congratulations!`
-        : `Your adoption request for ${request.pets?.name} has been rejected.`,
-      type: status === "approved" ? "adoption_approved" : "adoption_rejected",
-      related_id: request.pet_id,
-    });
-
-    toast({ title: `Request ${status}!` });
-    fetchData();
-  };
-
   const handleApproveVisitTime = async (request: AdoptionRequest, time: string) => {
     const { error } = await supabase
       .from("adoption_requests")
@@ -150,32 +115,63 @@ export function ShelterDashboard() {
     fetchData();
   };
 
+  const handleUpdateRequest = async (request: AdoptionRequest, status: "approved" | "rejected") => {
+    // Shelter must approve visit first before approving adoption
+    if (status === "approved" && request.preferred_visit_times && request.preferred_visit_times.length > 0 && !request.approved_visit_time) {
+      toast({ title: "Please approve a visit time first", description: "You must confirm a shelter visit before approving the adoption.", variant: "destructive" });
+      return;
+    }
+
+    const { error } = await supabase
+      .from("adoption_requests")
+      .update({ status })
+      .eq("id", request.id);
+
+    if (error) {
+      toast({ title: "Error updating request", variant: "destructive" });
+      return;
+    }
+
+    const petStatus = status === "approved" ? "adopted" : "available";
+    await supabase.from("pets").update({ status: petStatus }).eq("id", request.pet_id);
+
+    if (status === "approved") {
+      await supabase.from("pets").update({ is_for_adoption: false }).eq("id", request.pet_id);
+    }
+
+    await supabase.from("notifications").insert({
+      user_id: request.requester_id,
+      title: status === "approved" ? "Adoption Approved! 🎉" : "Adoption Request Update",
+      message: status === "approved"
+        ? `Your adoption request for ${request.pets?.name} has been approved! Congratulations!`
+        : `Your adoption request for ${request.pets?.name} has been rejected.`,
+      type: status === "approved" ? "adoption_approved" : "adoption_rejected",
+      related_id: request.pet_id,
+    });
+
+    toast({ title: `Request ${status}!` });
+    fetchData();
+  };
+
   return (
     <div className="space-y-6">
       <Tabs defaultValue="requests">
         <TabsList>
           <TabsTrigger value="requests" className="gap-2">
-            <ClipboardCheck className="h-4 w-4" />
-            Adoption Requests
+            <ClipboardCheck className="h-4 w-4" />Adoption Requests
           </TabsTrigger>
           <TabsTrigger value="pets" className="gap-2">
-            <PawPrint className="h-4 w-4" />
-            Listed Pets
+            <PawPrint className="h-4 w-4" />Listed Pets
           </TabsTrigger>
         </TabsList>
 
         <TabsContent value="requests" className="mt-6">
           <h2 className="text-xl font-semibold mb-4">Adoption Requests</h2>
-
-          {loading ? (
-            <p className="text-muted-foreground">Loading...</p>
-          ) : adoptionRequests.length === 0 ? (
-            <Card>
-              <CardContent className="py-12 text-center">
-                <ClipboardCheck className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
-                <p className="text-muted-foreground">No adoption requests yet.</p>
-              </CardContent>
-            </Card>
+          {loading ? <p className="text-muted-foreground">Loading...</p> : adoptionRequests.length === 0 ? (
+            <Card><CardContent className="py-12 text-center">
+              <ClipboardCheck className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
+              <p className="text-muted-foreground">No adoption requests yet.</p>
+            </CardContent></Card>
           ) : (
             <div className="space-y-4">
               {adoptionRequests.map((request) => (
@@ -183,9 +179,7 @@ export function ShelterDashboard() {
                   <CardHeader>
                     <div className="flex justify-between items-start">
                       <div>
-                        <CardTitle className="text-lg">
-                          Request for {request.pets?.name || "Unknown Pet"}
-                        </CardTitle>
+                        <CardTitle className="text-lg">Request for {request.pets?.name || "Unknown Pet"}</CardTitle>
                         <CardDescription>
                           From: {request.full_name || request.profiles?.full_name || request.profiles?.email || "Unknown"}
                         </CardDescription>
@@ -194,13 +188,10 @@ export function ShelterDashboard() {
                         request.status === "pending" ? "bg-yellow-100 text-yellow-800" :
                         request.status === "approved" ? "bg-green-100 text-green-800" :
                         "bg-red-100 text-red-800"
-                      }>
-                        {request.status}
-                      </Badge>
+                      }>{request.status}</Badge>
                     </div>
                   </CardHeader>
                   <CardContent className="space-y-4">
-                    {/* Applicant details */}
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-2 text-sm">
                       {request.email && <p><span className="font-medium">Email:</span> {request.email}</p>}
                       {request.phone && <p><span className="font-medium">Phone:</span> {request.phone}</p>}
@@ -212,30 +203,22 @@ export function ShelterDashboard() {
                         <p className="text-muted-foreground mt-1">"{request.reason}"</p>
                       </div>
                     )}
-                    {request.message && (
-                      <p className="text-sm text-muted-foreground">"{request.message}"</p>
-                    )}
+                    {request.message && <p className="text-sm text-muted-foreground">"{request.message}"</p>}
 
-                    {/* Visit time approval */}
+                    {/* Visit time approval - ALWAYS show if visit times exist */}
                     {request.preferred_visit_times && request.preferred_visit_times.length > 0 && (
                       <div className="p-3 rounded-lg border border-border bg-muted/30">
                         <p className="text-sm font-medium mb-2 flex items-center gap-1">
                           <Clock className="h-4 w-4" />
-                          Preferred Visit Times ({request.visit_date})
+                          Preferred Visit Times {request.visit_date && `(${request.visit_date})`}
                         </p>
                         {request.approved_visit_time ? (
                           <p className="text-sm text-green-700">✅ Approved: {request.approved_visit_time}</p>
                         ) : (
                           <div className="flex flex-wrap gap-2">
                             {request.preferred_visit_times.map((time, i) => (
-                              <Button
-                                key={i}
-                                size="sm"
-                                variant="outline"
-                                onClick={() => handleApproveVisitTime(request, time)}
-                              >
-                                <CheckCircle className="mr-1 h-3 w-3" />
-                                {time}
+                              <Button key={i} size="sm" variant="outline" onClick={() => handleApproveVisitTime(request, time)}>
+                                <CheckCircle className="mr-1 h-3 w-3" />{time}
                               </Button>
                             ))}
                           </div>
@@ -243,16 +226,13 @@ export function ShelterDashboard() {
                       </div>
                     )}
 
-                    {/* Approve/Reject buttons */}
                     {request.status === "pending" && (
                       <div className="flex gap-2">
                         <Button size="sm" onClick={() => handleUpdateRequest(request, "approved")}>
-                          <CheckCircle className="mr-2 h-4 w-4" />
-                          Approve
+                          <CheckCircle className="mr-2 h-4 w-4" />Approve Adoption
                         </Button>
                         <Button size="sm" variant="outline" onClick={() => handleUpdateRequest(request, "rejected")}>
-                          <XCircle className="mr-2 h-4 w-4" />
-                          Reject
+                          <XCircle className="mr-2 h-4 w-4" />Reject
                         </Button>
                       </div>
                     )}
@@ -267,32 +247,23 @@ export function ShelterDashboard() {
           <div className="flex justify-between items-center mb-4">
             <h2 className="text-xl font-semibold">Listed Pets</h2>
             <Button onClick={() => setShowCreatePet(true)}>
-              <PlusCircle className="mr-2 h-4 w-4" />
-              List Pet
+              <PlusCircle className="mr-2 h-4 w-4" />List Pet
             </Button>
           </div>
-
-          {loading ? (
-            <p className="text-muted-foreground">Loading...</p>
-          ) : pets.length === 0 ? (
-            <Card>
-              <CardContent className="py-12 text-center">
-                <PawPrint className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
-                <p className="text-muted-foreground">No pets listed yet.</p>
-              </CardContent>
-            </Card>
+          {loading ? <p className="text-muted-foreground">Loading...</p> : pets.length === 0 ? (
+            <Card><CardContent className="py-12 text-center">
+              <PawPrint className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
+              <p className="text-muted-foreground">No pets listed yet.</p>
+            </CardContent></Card>
           ) : (
             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
               {pets.map((pet) => (
                 <Card key={pet.id}>
                   <CardHeader>
                     <CardTitle className="flex items-center gap-2">
-                      <PawPrint className="h-5 w-5 text-primary" />
-                      {pet.name}
+                      <PawPrint className="h-5 w-5 text-primary" />{pet.name}
                     </CardTitle>
-                    <CardDescription>
-                      {pet.species} {pet.breed && `• ${pet.breed}`}
-                    </CardDescription>
+                    <CardDescription>{pet.species} {pet.breed && `• ${pet.breed}`}</CardDescription>
                   </CardHeader>
                   <CardContent>
                     <div className="flex items-center justify-between">
@@ -307,12 +278,7 @@ export function ShelterDashboard() {
         </TabsContent>
       </Tabs>
 
-      <CreatePetDialog
-        open={showCreatePet}
-        onOpenChange={setShowCreatePet}
-        onSuccess={handlePetCreated}
-        isShelter={true}
-      />
+      <CreatePetDialog open={showCreatePet} onOpenChange={setShowCreatePet} onSuccess={handlePetCreated} isShelter={true} />
     </div>
   );
 }
