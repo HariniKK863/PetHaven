@@ -8,8 +8,9 @@ import { VeterinarianDashboard } from "@/components/dashboard/VeterinarianDashbo
 import { GeneralUserDashboard } from "@/components/dashboard/GeneralUserDashboard";
 import { AdminDashboard } from "@/components/dashboard/AdminDashboard";
 import { VerificationUpload } from "@/components/dashboard/VerificationUpload";
-import { Loader2 } from "lucide-react";
+import { Loader2, ShieldAlert } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import { Card, CardContent } from "@/components/ui/card";
 
 export default function DashboardPage() {
   const { user, role, loading } = useAuth();
@@ -20,7 +21,6 @@ export default function DashboardPage() {
 
   const fetchProfile = async () => {
     if (!user) return;
-    
     const { data } = await supabase
       .from("profiles")
       .select("verification_status, verification_document_url")
@@ -35,9 +35,7 @@ export default function DashboardPage() {
   };
 
   useEffect(() => {
-    if (!loading && !user) {
-      navigate("/login");
-    }
+    if (!loading && !user) navigate("/login");
   }, [user, loading, navigate]);
 
   useEffect(() => {
@@ -58,9 +56,7 @@ export default function DashboardPage() {
     );
   }
 
-  if (!user) {
-    return null;
-  }
+  if (!user) return null;
 
   const needsVerification = (role === "shelter" || role === "veterinarian") && verificationStatus !== "approved";
 
@@ -68,11 +64,9 @@ export default function DashboardPage() {
     <Layout>
       <div className="container mx-auto px-4 py-8">
         <h1 className="text-3xl font-bold mb-2">Dashboard</h1>
-        <p className="text-muted-foreground mb-8">
-          Welcome back! Here's your personalized dashboard.
-        </p>
+        <p className="text-muted-foreground mb-8">Welcome back! Here's your personalized dashboard.</p>
 
-        {/* Show verification upload for unverified shelters/vets */}
+        {/* Show verification for unverified shelters/vets - BLOCK all features */}
         {needsVerification && (
           <div className="mb-8">
             <VerificationUpload
@@ -80,19 +74,31 @@ export default function DashboardPage() {
               documentUrl={documentUrl}
               onUploadComplete={fetchProfile}
             />
+            <Card className="mt-4 border-yellow-200 bg-yellow-50/50">
+              <CardContent className="py-6 flex items-center gap-3">
+                <ShieldAlert className="h-6 w-6 text-yellow-600" />
+                <p className="text-yellow-800">
+                  Your account is pending admin verification. Features will be unlocked once your documents are approved.
+                </p>
+              </CardContent>
+            </Card>
           </div>
         )}
 
-        {role === "general_user" && <GeneralUserDashboard />}
-        {role === "pet_owner" && <PetOwnerDashboard />}
-        {role === "shelter" && <ShelterDashboard />}
-        {role === "veterinarian" && <VeterinarianDashboard />}
-        {role === "admin" && <AdminDashboard />}
-        {!role && (
+        {/* Only show dashboard features if verified or not a shelter/vet */}
+        {!needsVerification && (
+          <>
+            {role === "general_user" && <GeneralUserDashboard />}
+            {role === "pet_owner" && <PetOwnerDashboard />}
+            {role === "shelter" && <ShelterDashboard />}
+            {role === "veterinarian" && <VeterinarianDashboard />}
+            {role === "admin" && <AdminDashboard />}
+          </>
+        )}
+
+        {!role && !needsVerification && (
           <div className="text-center py-12">
-            <p className="text-muted-foreground">
-              No role assigned. Please contact support.
-            </p>
+            <p className="text-muted-foreground">No role assigned. Please contact support.</p>
           </div>
         )}
       </div>
