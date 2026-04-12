@@ -1,0 +1,731 @@
+export type Json =
+  | string
+  | number
+  | boolean
+  | null
+  | { [key: string]: Json | undefined }
+  | Json[]
+
+export type Database = {
+  // Allows to automatically instantiate createClient with right options
+  // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
+  __InternalSupabase: {
+    PostgrestVersion: "14.1"
+  }
+  public: {
+    Tables: {
+      adoption_requests: {
+        Row: {
+          address: string | null
+          approved_visit_time: string | null
+          created_at: string
+          email: string | null
+          full_name: string | null
+          id: string
+          message: string | null
+          pet_age: string | null
+          pet_breed: string | null
+          pet_image_url: string | null
+          pet_location: string | null
+          pet_id: string
+          pet_name: string | null
+          pet_shelter_name: string | null
+          pet_species: string | null
+          phone: string | null
+          preferred_visit_times: string[] | null
+          reason: string | null
+          requester_id: string
+          shelter_id: string | null
+          status: string
+          updated_at: string
+          visit_date: string | null
+        }
+        Insert: {
+          address?: string | null
+          approved_visit_time?: string | null
+          created_at?: string
+          email?: string | null
+          full_name?: string | null
+          id?: string
+          message?: string | null
+          pet_age?: string | null
+          pet_breed?: string | null
+          pet_image_url?: string | null
+          pet_location?: string | null
+          pet_id: string
+          pet_name?: string | null
+          pet_shelter_name?: string | null
+          pet_species?: string | null
+          phone?: string | null
+          preferred_visit_times?: string[] | null
+          reason?: string | null
+          requester_id: string
+          shelter_id?: string | null
+          status?: string
+          updated_at?: string
+          visit_date?: string | null
+        }
+        Update: {
+          address?: string | null
+          approved_visit_time?: string | null
+          created_at?: string
+          email?: string | null
+          full_name?: string | null
+          id?: string
+          message?: string | null
+          pet_age?: string | null
+          pet_breed?: string | null
+          pet_image_url?: string | null
+          pet_location?: string | null
+          pet_id?: string
+          pet_name?: string | null
+          pet_shelter_name?: string | null
+          pet_species?: string | null
+          phone?: string | null
+          preferred_visit_times?: string[] | null
+          reason?: string | null
+          requester_id?: string
+          shelter_id?: string | null
+          status?: string
+          updated_at?: string
+          visit_date?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "adoption_requests_pet_id_fkey"
+            columns: ["pet_id"]
+            isOneToOne: false
+            referencedRelation: "pets"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      injured_reports: {
+        Row: {
+          assigned_vet_id: string | null
+          created_at: string
+          description: string
+          id: string
+          image_url: string | null
+          location: string
+          reporter_email: string | null
+          reporter_id: string
+          reporter_name: string | null
+          reporter_phone: string | null
+          severity: string
+          species: string
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          assigned_vet_id?: string | null
+          created_at?: string
+          description: string
+          id?: string
+          image_url?: string | null
+          location: string
+          reporter_email?: string | null
+          reporter_id: string
+          reporter_name?: string | null
+          reporter_phone?: string | null
+          severity: string
+          species: string
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          assigned_vet_id?: string | null
+          created_at?: string
+          description?: string
+          id?: string
+          image_url?: string | null
+          location?: string
+          reporter_email?: string | null
+          reporter_id?: string
+          reporter_name?: string | null
+          reporter_phone?: string | null
+          severity?: string
+          species?: string
+          status?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      lost_found_reports: {
+        Row: {
+          breed: string | null
+          color: string | null
+          contact_info: string | null
+          created_at: string
+          date_reported: string
+          description: string | null
+          id: string
+          image_url: string | null
+          location: string
+          pet_name: string | null
+          reporter_id: string
+          species: string
+          status: string
+          type: string
+          updated_at: string
+        }
+        Insert: {
+          breed?: string | null
+          color?: string | null
+          contact_info?: string | null
+          created_at?: string
+          date_reported?: string
+          description?: string | null
+          id?: string
+          image_url?: string | null
+          location: string
+          pet_name?: string | null
+          reporter_id: string
+          species: string
+          status?: string
+          type: string
+          updated_at?: string
+        }
+        Update: {
+          breed?: string | null
+          color?: string | null
+          contact_info?: string | null
+          created_at?: string
+          date_reported?: string
+          description?: string | null
+          id?: string
+          image_url?: string | null
+          location?: string
+          pet_name?: string | null
+          reporter_id?: string
+          species?: string
+          status?: string
+          type?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      medical_records: {
+        Row: {
+          appointment_id: string | null
+          created_at: string
+          diagnosis: string
+          id: string
+          medical_file_path: string | null
+          notes: string | null
+          pet_id: string
+          record_date: string
+          treatment: string
+          vet_id: string
+        }
+        Insert: {
+          appointment_id?: string | null
+          created_at?: string
+          diagnosis: string
+          id?: string
+          medical_file_path?: string | null
+          notes?: string | null
+          pet_id: string
+          record_date?: string
+          treatment: string
+          vet_id: string
+        }
+        Update: {
+          appointment_id?: string | null
+          created_at?: string
+          diagnosis?: string
+          id?: string
+          medical_file_path?: string | null
+          notes?: string | null
+          pet_id?: string
+          record_date?: string
+          treatment?: string
+          vet_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "medical_records_appointment_id_fkey"
+            columns: ["appointment_id"]
+            isOneToOne: false
+            referencedRelation: "vet_appointments"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "medical_records_pet_id_fkey"
+            columns: ["pet_id"]
+            isOneToOne: false
+            referencedRelation: "pets"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      notifications: {
+        Row: {
+          created_at: string
+          id: string
+          is_read: boolean
+          message: string
+          related_id: string | null
+          title: string
+          type: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          is_read?: boolean
+          message: string
+          related_id?: string | null
+          title: string
+          type?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          is_read?: boolean
+          message?: string
+          related_id?: string | null
+          title?: string
+          type?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      pets: {
+        Row: {
+          age: string | null
+          breed: string | null
+          created_at: string
+          description: string | null
+          gender: string | null
+          id: string
+          image_url: string | null
+          is_for_adoption: boolean | null
+          latest_medical_file_path: string | null
+          location: string | null
+          medical_card_file_path: string | null
+          name: string
+          neutered: boolean | null
+          owner_id: string
+          shelter_name: string | null
+          species: string
+          status: string
+          updated_at: string
+          vaccinated: boolean | null
+        }
+        Insert: {
+          age?: string | null
+          breed?: string | null
+          created_at?: string
+          description?: string | null
+          gender?: string | null
+          id?: string
+          image_url?: string | null
+          is_for_adoption?: boolean | null
+          latest_medical_file_path?: string | null
+          location?: string | null
+          medical_card_file_path?: string | null
+          name: string
+          neutered?: boolean | null
+          owner_id: string
+          shelter_name?: string | null
+          species: string
+          status?: string
+          updated_at?: string
+          vaccinated?: boolean | null
+        }
+        Update: {
+          age?: string | null
+          breed?: string | null
+          created_at?: string
+          description?: string | null
+          gender?: string | null
+          id?: string
+          image_url?: string | null
+          is_for_adoption?: boolean | null
+          latest_medical_file_path?: string | null
+          location?: string | null
+          medical_card_file_path?: string | null
+          name?: string
+          neutered?: boolean | null
+          owner_id?: string
+          shelter_name?: string | null
+          species?: string
+          status?: string
+          updated_at?: string
+          vaccinated?: boolean | null
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          address: string | null
+          avatar_url: string | null
+          created_at: string
+          email: string | null
+          full_name: string | null
+          id: string
+          is_verified: boolean | null
+          organization_name: string | null
+          phone: string | null
+          updated_at: string
+          user_id: string
+          verification_document_url: string | null
+          verification_status: string | null
+        }
+        Insert: {
+          address?: string | null
+          avatar_url?: string | null
+          created_at?: string
+          email?: string | null
+          full_name?: string | null
+          id?: string
+          is_verified?: boolean | null
+          organization_name?: string | null
+          phone?: string | null
+          updated_at?: string
+          user_id: string
+          verification_document_url?: string | null
+          verification_status?: string | null
+        }
+        Update: {
+          address?: string | null
+          avatar_url?: string | null
+          created_at?: string
+          email?: string | null
+          full_name?: string | null
+          id?: string
+          is_verified?: boolean | null
+          organization_name?: string | null
+          phone?: string | null
+          updated_at?: string
+          user_id?: string
+          verification_document_url?: string | null
+          verification_status?: string | null
+        }
+        Relationships: []
+      }
+      treatment_requests: {
+        Row: {
+          created_at: string
+          description: string
+          id: string
+          notes: string | null
+          owner_id: string
+          pet_id: string
+          status: string
+          updated_at: string
+          veterinarian_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          description: string
+          id?: string
+          notes?: string | null
+          owner_id: string
+          pet_id: string
+          status?: string
+          updated_at?: string
+          veterinarian_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          description?: string
+          id?: string
+          notes?: string | null
+          owner_id?: string
+          pet_id?: string
+          status?: string
+          updated_at?: string
+          veterinarian_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "treatment_requests_pet_id_fkey"
+            columns: ["pet_id"]
+            isOneToOne: false
+            referencedRelation: "pets"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_roles: {
+        Row: {
+          created_at: string
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
+      vet_appointments: {
+        Row: {
+          appointment_date: string
+          appointment_time: string
+          created_at: string
+          id: string
+          medical_notes: string | null
+          pet_id: string | null
+          reason: string | null
+          slot_id: string | null
+          status: string
+          updated_at: string
+          user_id: string
+          vet_id: string
+        }
+        Insert: {
+          appointment_date: string
+          appointment_time: string
+          created_at?: string
+          id?: string
+          medical_notes?: string | null
+          pet_id?: string | null
+          reason?: string | null
+          slot_id?: string | null
+          status?: string
+          updated_at?: string
+          user_id: string
+          vet_id: string
+        }
+        Update: {
+          appointment_date?: string
+          appointment_time?: string
+          created_at?: string
+          id?: string
+          medical_notes?: string | null
+          pet_id?: string | null
+          reason?: string | null
+          slot_id?: string | null
+          status?: string
+          updated_at?: string
+          user_id?: string
+          vet_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "vet_appointments_pet_id_fkey"
+            columns: ["pet_id"]
+            isOneToOne: false
+            referencedRelation: "pets"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "vet_appointments_slot_id_fkey"
+            columns: ["slot_id"]
+            isOneToOne: false
+            referencedRelation: "vet_slots"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      vet_slots: {
+        Row: {
+          created_at: string
+          id: string
+          is_booked: boolean
+          slot_date: string
+          slot_time: string
+          vet_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          is_booked?: boolean
+          slot_date: string
+          slot_time: string
+          vet_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          is_booked?: boolean
+          slot_date?: string
+          slot_time?: string
+          vet_id?: string
+        }
+        Relationships: []
+      }
+    }
+    Views: {
+      [_ in never]: never
+    }
+    Functions: {
+      complete_vet_appointment_record: {
+        Args: {
+          _appointment_id: string
+          _diagnosis: string
+          _treatment: string
+          _notes?: string | null
+          _medical_file_path?: string | null
+        }
+        Returns: string
+      }
+      get_user_role: {
+        Args: { _user_id: string }
+        Returns: Database["public"]["Enums"]["app_role"]
+      }
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
+    }
+    Enums: {
+      app_role:
+        | "pet_owner"
+        | "shelter"
+        | "veterinarian"
+        | "general_user"
+        | "admin"
+    }
+    CompositeTypes: {
+      [_ in never]: never
+    }
+  }
+}
+
+type DatabaseWithoutInternals = Omit<Database, "__InternalSupabase">
+
+type DefaultSchema = DatabaseWithoutInternals[Extract<keyof Database, "public">]
+
+export type Tables<
+  DefaultSchemaTableNameOrOptions extends
+    | keyof (DefaultSchema["Tables"] & DefaultSchema["Views"])
+    | { schema: keyof DatabaseWithoutInternals },
+  TableName extends DefaultSchemaTableNameOrOptions extends {
+    schema: keyof DatabaseWithoutInternals
+  }
+    ? keyof (DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"] &
+        DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Views"])
+    : never = never,
+> = DefaultSchemaTableNameOrOptions extends {
+  schema: keyof DatabaseWithoutInternals
+}
+  ? (DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"] &
+      DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Views"])[TableName] extends {
+      Row: infer R
+    }
+    ? R
+    : never
+  : DefaultSchemaTableNameOrOptions extends keyof (DefaultSchema["Tables"] &
+        DefaultSchema["Views"])
+    ? (DefaultSchema["Tables"] &
+        DefaultSchema["Views"])[DefaultSchemaTableNameOrOptions] extends {
+        Row: infer R
+      }
+      ? R
+      : never
+    : never
+
+export type TablesInsert<
+  DefaultSchemaTableNameOrOptions extends
+    | keyof DefaultSchema["Tables"]
+    | { schema: keyof DatabaseWithoutInternals },
+  TableName extends DefaultSchemaTableNameOrOptions extends {
+    schema: keyof DatabaseWithoutInternals
+  }
+    ? keyof DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"]
+    : never = never,
+> = DefaultSchemaTableNameOrOptions extends {
+  schema: keyof DatabaseWithoutInternals
+}
+  ? DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"][TableName] extends {
+      Insert: infer I
+    }
+    ? I
+    : never
+  : DefaultSchemaTableNameOrOptions extends keyof DefaultSchema["Tables"]
+    ? DefaultSchema["Tables"][DefaultSchemaTableNameOrOptions] extends {
+        Insert: infer I
+      }
+      ? I
+      : never
+    : never
+
+export type TablesUpdate<
+  DefaultSchemaTableNameOrOptions extends
+    | keyof DefaultSchema["Tables"]
+    | { schema: keyof DatabaseWithoutInternals },
+  TableName extends DefaultSchemaTableNameOrOptions extends {
+    schema: keyof DatabaseWithoutInternals
+  }
+    ? keyof DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"]
+    : never = never,
+> = DefaultSchemaTableNameOrOptions extends {
+  schema: keyof DatabaseWithoutInternals
+}
+  ? DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"][TableName] extends {
+      Update: infer U
+    }
+    ? U
+    : never
+  : DefaultSchemaTableNameOrOptions extends keyof DefaultSchema["Tables"]
+    ? DefaultSchema["Tables"][DefaultSchemaTableNameOrOptions] extends {
+        Update: infer U
+      }
+      ? U
+      : never
+    : never
+
+export type Enums<
+  DefaultSchemaEnumNameOrOptions extends
+    | keyof DefaultSchema["Enums"]
+    | { schema: keyof DatabaseWithoutInternals },
+  EnumName extends DefaultSchemaEnumNameOrOptions extends {
+    schema: keyof DatabaseWithoutInternals
+  }
+    ? keyof DatabaseWithoutInternals[DefaultSchemaEnumNameOrOptions["schema"]]["Enums"]
+    : never = never,
+> = DefaultSchemaEnumNameOrOptions extends {
+  schema: keyof DatabaseWithoutInternals
+}
+  ? DatabaseWithoutInternals[DefaultSchemaEnumNameOrOptions["schema"]]["Enums"][EnumName]
+  : DefaultSchemaEnumNameOrOptions extends keyof DefaultSchema["Enums"]
+    ? DefaultSchema["Enums"][DefaultSchemaEnumNameOrOptions]
+    : never
+
+export type CompositeTypes<
+  PublicCompositeTypeNameOrOptions extends
+    | keyof DefaultSchema["CompositeTypes"]
+    | { schema: keyof DatabaseWithoutInternals },
+  CompositeTypeName extends PublicCompositeTypeNameOrOptions extends {
+    schema: keyof DatabaseWithoutInternals
+  }
+    ? keyof DatabaseWithoutInternals[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"]
+    : never = never,
+> = PublicCompositeTypeNameOrOptions extends {
+  schema: keyof DatabaseWithoutInternals
+}
+  ? DatabaseWithoutInternals[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"][CompositeTypeName]
+  : PublicCompositeTypeNameOrOptions extends keyof DefaultSchema["CompositeTypes"]
+    ? DefaultSchema["CompositeTypes"][PublicCompositeTypeNameOrOptions]
+    : never
+
+export const Constants = {
+  public: {
+    Enums: {
+      app_role: [
+        "pet_owner",
+        "shelter",
+        "veterinarian",
+        "general_user",
+        "admin",
+      ],
+    },
+  },
+} as const

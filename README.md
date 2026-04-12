@@ -4,6 +4,24 @@
 
 **URL**: https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID
 
+## Project structure
+
+```text
+.
+|- frontend/   # React + Vite app source, public assets, and entry HTML
+|- backend/    # Supabase config and SQL migrations
+|- package.json
+|- vite.config.ts
+```
+
+Run frontend commands from the repository root:
+
+```sh
+npm i
+npm run dev
+npm run build
+```
+
 ## How can I edit this code?
 
 There are several ways of editing your application.
